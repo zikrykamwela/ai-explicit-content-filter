@@ -8,6 +8,8 @@ image_path = sys.argv[1] if len(sys.argv) > 1 else "data/test.jpg"
 if not image_path:
     raise ValueError("Please provide an image path, for example: ./run.sh data/test.jpg")
 
+print(f"Image path: {image_path}")
+
 result = predict_image(image_path)
 
 print("Prediction Result")
