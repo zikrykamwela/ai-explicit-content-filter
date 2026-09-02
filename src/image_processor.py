@@ -1,6 +1,6 @@
 from pathlib import Path
-
 import cv2
+from PIL import Image
 
 
 def load_image(image_path: str):
@@ -18,15 +18,35 @@ def load_image(image_path: str):
     return image
 
 
+def load_image_pil(image_path: str):
+    """Load an image from disk using PIL."""
+    path = Path(image_path)
+
+    if not path.exists():
+        raise FileNotFoundError(f"Image not found: {image_path}")
+
+    image = Image.open(str(path)).convert("RGB")
+
+    return image
+
+
 def get_image_info(image):
     """Return basic information about an image."""
-    height, width, channels = image.shape
+    if isinstance(image, Image.Image):
+        width, height = image.size
+        return {
+            "width": width,
+            "height": height,
+            "channels": 3 if image.mode == "RGB" else len(image.mode),
+        }
+    else:
+        height, width, channels = image.shape
+        return {
+            "width": width,
+            "height": height,
+            "channels": channels,
+        }
 
-    return {
-        "width": width,
-        "height": height,
-        "channels": channels,
-    }
 
 import torch
 from torchvision import transforms
