@@ -13,12 +13,15 @@ def test_load_model():
     model = load_model()
 
     assert model is not None
-    assert model.training is False
+    # Model is a Hugging Face pipeline, not a PyTorch module
+    assert hasattr(model, "__call__") or callable(model)
 
 
 def test_classify_explicitness():
-    """Test explicit/non-explicit classification helper."""
-    assert classify_explicitness("tobacco shop", 0.41) == "non-explicit"
-    assert classify_explicitness("bikini", 0.78) == "explicit"
-    assert classify_explicitness("lingerie", 0.52) == "explicit"
-    assert classify_explicitness("person", 0.92) == "non-explicit"
+    """Test explicit/non-explicit classification helper for NSFW model."""
+    # NSFW model outputs: "normal", "safe", "porn", "sexy", "hentai"
+    assert classify_explicitness("normal", 0.95) == "non-explicit"
+    assert classify_explicitness("safe", 0.90) == "non-explicit"
+    assert classify_explicitness("porn", 0.85) == "explicit"
+    assert classify_explicitness("sexy", 0.75) == "explicit"
+    assert classify_explicitness("hentai", 0.80) == "explicit"

@@ -19,8 +19,3 @@ print(f"Classification: {result['class_name'].upper()}")
 print(f"Explicitness: {result['explicitness'].upper()}")
 print(f"Confidence: {result['confidence']:.2%}")
 print(f"Class ID: {result['class_id']}")
-print()
-print("All Predictions:")
-print("-" * 50)
-for pred in result['all_predictions']:
-    print(f"  {pred['label']:15} - {pred['score']:.2%}")

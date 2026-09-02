@@ -11,7 +11,9 @@ from app import app
 
 
 def test_upload_image_page_and_prediction():
-    """A valid uploaded image should return the prediction page."""
+    """A valid uploaded image should return the prediction JSON."""
+    import json
+    
     client = app.test_client()
 
     image = np.zeros((32, 32, 3), dtype=np.uint8)
@@ -25,4 +27,14 @@ def test_upload_image_page_and_prediction():
 
     assert response.status_code == 200
     body = response.get_data(as_text=True)
-    assert "Prediction Result" in body
+    
+    # Parse JSON response
+    data = json.loads(body)
+    
+    # Verify the response has the expected prediction result
+    assert "result" in data
+    result = data["result"]
+    assert "class_name" in result
+    assert "confidence" in result
+    assert "explicitness" in result
+    assert result["explicitness"] in ["explicit", "non-explicit"]
