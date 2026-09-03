@@ -39,10 +39,9 @@ def predict_image(image_path: str):
     model = load_model()
     
     # Open the image using PIL (required by Hugging Face pipeline)
-    image = Image.open(image_path)
-    
-    # Run inference
-    results = model(image)
+    with Image.open(image_path) as image:
+        # Run inference
+        results = model(image)
     
     # Get the top prediction
     top_result = results[0]

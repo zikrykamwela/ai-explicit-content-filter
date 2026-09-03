@@ -1,0 +1,57 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Private AI-powered protection for visual content.">
+  <title>ClearView | Content protection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'filter_site/site.css' %}">
+</head>
+<body>
+  <div class="shell">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="/" aria-label="ClearView home"><span class="brand-mark">CV</span><span>ClearView</span></a>
+      <div class="nav-meta"><span class="status-dot"></span> Local protection active</div>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">PRIVATE BY DESIGN <span>·</span> AI CONTENT SAFETY</p>
+          <h1>A clearer view of<br><em>what comes next.</em></h1>
+          <p class="lede">Check an image before it reaches your screen. ClearView keeps analysis on your machine and gives you a calm, confident answer.</p>
+          <div class="trust-row"><span>◉</span> Local model processing <span>•</span> No image storage</div>
+        </div>
+        <div class="hero-orbit" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit-core">CV</div></div>
+      </section>
+
+      <section class="workspace" aria-labelledby="analyzer-title">
+        <div class="section-heading"><div><p class="eyebrow">IMAGE CHECK</p><h2 id="analyzer-title">Analyze a visual</h2></div><span class="step-count">01 <i>/</i> 02</span></div>
+        <form id="analyze-form" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <label class="dropzone" id="dropzone" for="image-input">
+            <input id="image-input" name="image" type="file" accept="image/png,image/jpeg,image/webp" required>
+            <span class="upload-icon">↥</span>
+            <span class="drop-title">Drop an image here</span>
+            <span class="drop-subtitle">or <u>browse your files</u></span>
+            <span class="file-types">JPG, PNG or WEBP <b>·</b> UP TO 16 MB</span>
+          </label>
+          <div class="preview" id="preview" hidden><img id="preview-image" alt="Selected image preview"><div><strong id="file-name"></strong><small id="file-size"></small></div><button type="button" class="icon-button" id="remove-file" aria-label="Remove selected image">×</button></div>
+          <button class="primary-button" id="analyze-button" type="submit" disabled><span>Analyze image</span><span class="button-arrow">→</span></button>
+        </form>
+        <div class="loading" id="loading" hidden><span class="loader"></span><span id="loading-text">Reading the image securely...</span></div>
+        <div class="message" id="message" role="alert" hidden></div>
+        <section class="result" id="result" hidden aria-live="polite"><div class="result-top"><div><p class="eyebrow">ANALYSIS COMPLETE</p><h2 id="result-title">Looks clear</h2></div><span class="result-symbol" id="result-symbol">✓</span></div><div class="result-grid"><div><span class="result-label">Classification</span><strong id="result-class">—</strong></div><div><span class="result-label">Confidence</span><strong id="result-confidence">—</strong><div class="confidence-track"><span id="confidence-fill"></span></div></div><div><span class="result-label">Recommendation</span><strong id="result-recommendation">Safe to view</strong></div></div><button class="text-button" type="button" id="new-check">Analyze another image <span>↗</span></button></section>
+      </section>
+
+      <section class="feature-strip"><div><span class="feature-number">01</span><strong>Private</strong><p>Your image stays on this device.</p></div><div><span class="feature-number">02</span><strong>Focused</strong><p>One clear result, no noise.</p></div><div><span class="feature-number">03</span><strong>Ready to protect</strong><p>Pair it with the browser extension.</p></div></section>
+    </main>
+    <footer><span>CLEARVIEW / CONTENT SAFETY TOOL</span><span>BUILT FOR A QUIETER INTERNET</span></footer>
+  </div>
+  <script src="{% static 'filter_site/site.js' %}"></script>
+</body>
+</html>

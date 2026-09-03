@@ -1,5 +1,6 @@
 from flask import Flask, render_template_string, request, jsonify
 import os
+import tempfile
 from src.predict import predict_image
 
 app = Flask(__name__)
@@ -712,29 +713,36 @@ HTML = """
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        try:
-            uploaded_file = request.files.get("image")
-
-            if not uploaded_file or not uploaded_file.filename:
-                return jsonify({"error": "No file provided"}), 400
-
-            # Save temporary file
-            temp_path = f"/tmp/{uploaded_file.filename}"
-            uploaded_file.save(temp_path)
-
-            # Run prediction
-            result = predict_image(temp_path)
-
-            # Clean up
-            if os.path.exists(temp_path):
-                os.remove(temp_path)
-
-            return jsonify({"result": result}), 200
-
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+        return predict_uploaded_image()
 
     return render_template_string(HTML)
+
+
+@app.route("/api/predict", methods=["POST"])
+def predict_api():
+    """Classify an image for browser extensions and other clients."""
+    return predict_uploaded_image()
+
+
+def predict_uploaded_image():
+    uploaded_file = request.files.get("image")
+
+    if not uploaded_file or not uploaded_file.filename:
+        return jsonify({"error": "No file provided"}), 400
+
+    try:
+        suffix = os.path.splitext(uploaded_file.filename)[1] or ".img"
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_file:
+            uploaded_file.save(temp_file)
+            temp_path = temp_file.name
+
+        result = predict_image(temp_path)
+        return jsonify({"result": result}), 200
+    except Exception as error:
+        return jsonify({"error": str(error)}), 500
+    finally:
+        if "temp_path" in locals() and os.path.exists(temp_path):
+            os.remove(temp_path)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,9 @@
 import torch
 from transformers import pipeline
+from functools import lru_cache
 
 
+@lru_cache(maxsize=1)
 def load_model():
     """
     Load a pre-trained NSFW image detection model from Hugging Face.
